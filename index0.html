@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
+    <!-- <script src="https://vjs.zencdn.net/ie8/1.1.2/videojs-ie8.min.js"></script> -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body onLoad='GetVideo()'>
+    <div class="container mt-5" >
+
+        <h3 class=""> 
+            HLS Video.JS  
+        </h3>
+        <p class="text-muted">Get to know your VOD Environment</p>
+
+        <video
+            id="my-video"
+            class="video-js"
+            controls
+            preload="auto"
+            width="640"
+            height="264"
+            poster="thunmnail.PNG"
+            data-setup="{}" 
+            loop autoplay controls >
+
+            <source 
+                id="videoSource" 
+                type='application/x-mpegURL' 
+                src="https://vod.fawadiqbal.me/asset/efe5cec03bd4e1f99dd8b86a6493f7f1/play_video/index.m3u8"
+             />
+            <!-- <source src="MY_VIDEO.webm" type="video/webm" /> -->
+            <p class="vjs-no-js">
+                To view this video please enable JavaScript, and consider upgrading to a
+                web browser that
+                <a href="https://videojs.com/html5-video-support/" target="_blank"
+                    >supports HTML5 video
+                </a>
+            </p>
+        </video>
+    
+        <!-- asd -->
+        
+        <form class="mt-3">
+            <div class="form-group">
+                <label for="stream_url"><span class="text-danger">*</span>  Stream URL </label>
+                <input type="text" class="form-control" id="stream_url" name="stream_url" placeholder="Enter Stream URL (M3U8)" required="true">
+            </div>  
+            <button type="button" class="btn btn-primary text-center " id="play_video">PLAY </button> &nbsp;&nbsp;&nbsp;
+
+
+            <div class="spinner-border text-primary" role="status" id="spinner"></div>
+                <!-- <span class="sr-only">Loading...</span> -->
+            
+            <div>
+                <p class="text-danger" id="errormessage"></p>
+            </div>
+
+        </form>
+
+        <!-- asd -->
+
+    </div>
+
+<script src="https://vjs.zencdn.net/8.6.1/video.min.js"></script>
+
+<script>
+     
+    document.getElementById('play_video').addEventListener('click',  GetVideo);
+ 
+    let spinner = document.getElementById("spinner");
+    spinner.style.visibility = 'hidden'; //'hidden'
+
+    //spinner.style.visibility = 'visible'; //'hidden'
+
+
+    function checkforempty(){
+
+        // console.log("checkforempty");
+        const stream_url = document.getElementById("stream_url").value;  
+
+        if (stream_url === ""){
+            // console.log("inside if 3 empty");
+            document.getElementById("errormessage").textContent = '* Please fill all fields!';
+        }else{
+            // console.log("inside else 3 - not-empty");
+            document.getElementById("errormessage").textContent = '';
+            fetchTotalSize();
+        }
+    }
+        
+    async function fetchTotalSize() {
+        spinner.style.visibility = 'visible'; //'hidden'
+        // console.log("fetchTotalSize called 4");
+         stream_url = document.getElementById("stream_url").value;      
+
+        document.getElementById('play_video').textContent = "Wait...";
+        document.getElementById('play_video').classList.remove('btn-primary'); // Replace 'btn-primary' with the current color class
+
+        // console.log(accountEmail);
+
+        const url = 'https://vod.fawadiqbal.me/asset/efe5cec03bd4e1f99dd8b86a6493f7f1/play_video/index.m3u8';
+
+
+        url = {url};   
+        videoSource.setAttribute('src', videoUrl);
+        
+
+        // This code is written by FAWAD IQBAL f84267582 (fwd82@live.com)
+ 
+    }
+
+
+    function GetVideo() {
+        x = getUrlVars()["https://vod.fawadiqbal.me/asset/a3056b9fe8b2f552737cb84849b496fd/play_video/index.m3u8"];
+        document.querySelector("#videoSource").setAttribute("src", x);
+        spinner.style.visibility = 'hidden'; //'hidden'
+    }
+
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
+
+</script>
+
+<!-- Include jQuery and Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>

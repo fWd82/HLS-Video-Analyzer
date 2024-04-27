@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive HLS Player</title>
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        #video-container {
+            margin-top: 20px;
+        }
+
+        #profileInfo, #stats {
+            background-color: #f7f7f9;
+            padding: 10px;
+            border: 1px solid #e1e1e8;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            overflow-y: auto; /* Allows scrolling within the div when content exceeds its height */
+        }
+
+
+
+        #statsPanel {
+            position: relative;
+            padding-left: 20px;
+            display: flex;
+            min-width: 300px;
+            flex-direction: column;
+            height: 600px; /* Adjust based on your layout needs */
+        }
+
+        select {
+            margin-top: 10px;
+            width: 100%;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f7f7f9;
+            border-top: 1px solid #e1e1e8;
+        }
+
+        #profileInfo {
+            flex-grow: 1; /* Allows this div to take up only as much space as it needs */
+            max-height: 30%; /* Adjust percentage based on your preference */
+        }
+
+        #stats {
+            flex-grow: 2; /* Allows this div to take more space */
+            max-height: 70%; /* Adjust percentage based on your preference */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container-fluid mt-2">
+        <h3>HLS Playback</h3>
+        <p class="lead">Get to know your m3u8 files.</p>
+        <div class="row">
+            <div class="col-md-8">
+                <input type="text" id="videoUrl" class="form-control" placeholder="Enter video URL here">
+                <button id="loadVideo" class="btn btn-primary btn-block mt-3">Load Video</button>
+                <select id="qualitySelector" class="form-control"></select>
+                <div id="video-container">
+                    <video id="videoPlayer" controls style="width: 100%; height: auto;"></video>
+                </div>
+                
+            </div>
+            <div id="statsPanel">
+                <div id="profileInfo"><strong>Available Profiles:</strong></div>
+                <ol id="stats" style="padding-left: 20px;"><strong>Playback Details:</strong></ol> <!-- Using ol instead of div -->
+            </div>
+            
+        </div>
+        <footer>
+            Copyrights © Ahmad Khan
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        document.getElementById('loadVideo').addEventListener('click', function() {
+            var videoUrl = document.getElementById('videoUrl').value;
+
+            // Check if the input is empty and assign a default URL if true
+            if (videoUrl.trim() === '') {
+                videoUrl = 'https://vod.fawadiqbal.me/asset/913fadd0be3c156283dd9611bedb0fff/play_video/index.m3u8';
+                document.getElementById('videoUrl').value = videoUrl; // Optionally set the default URL back to the input field
+            }
+
+            var video = document.getElementById('videoPlayer');
+            var statsDisplay = document.getElementById('stats');
+            var profileInfo = document.getElementById('profileInfo');
+            var qualitySelector = document.getElementById('qualitySelector');
+            if (Hls.isSupported()) {
+                var hls = new Hls();
+                hls.loadSource(videoUrl);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    video.play();
+                });
+
+                hls.on(Hls.Events.MANIFEST_LOADED, function(event, data) {
+                    qualitySelector.innerHTML = '';
+                    profileInfo.innerHTML += '<br>';
+                    data.levels.forEach((level, index) => {
+                        var option = document.createElement('option');
+                        option.value = index;
+                        option.text = 'Level ' + index + ': ' + level.width + 'x' + level.height + ', ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
+                        qualitySelector.appendChild(option);
+                        profileInfo.innerHTML += option.text + '<br>';
+                    });
+                    var autoOption = document.createElement('option');
+                    autoOption.value = -1;
+                    autoOption.text = 'Auto';
+                    autoOption.selected = true;
+                    qualitySelector.appendChild(autoOption);
+                });
+
+            // Function to append a new log entry to the ordered list
+            function appendLog(message) {
+                var newEntry = document.createElement('li');
+                newEntry.innerHTML = message;
+                var statsList = document.getElementById('stats');
+                statsList.appendChild(newEntry); // Append the new entry to the list
+            }
+
+            // Update for handling the quality selector change
+            qualitySelector.onchange = function() {
+                if (this.value === '-1') {
+                    hls.currentLevel = -1;
+                    appendLog('Switched to <strong>Automatic Quality Mode</strong>. Current quality details will update automatically.');
+                    setTimeout(() => {
+                        var level = hls.levels[hls.currentLevel];
+                        var currentQuality = 'Resolution: ' + level.width + 'x' + level.height + ', Bitrate: ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
+                        appendLog(currentQuality);
+                    }, 1000); // Delay for the player to adjust
+                } else {
+                    hls.currentLevel = parseInt(this.value);
+                    var level = hls.levels[hls.currentLevel];
+                    appendLog('Manual switch to level: <strong>' + this.value + '</strong>, Resolution: <strong>' + level.width + 'x' + level.height + '</strong>, Bitrate: <strong>' + (level.bitrate / 1024).toFixed(2) + ' kbps</strong>');
+                }
+            };
+
+            // Update for LEVEL_SWITCHED event
+            hls.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
+                var level = hls.levels[data.level];
+                var qualityDetails = 'Current Playback: Level ' + data.level +
+                    ', Resolution: ' + level.width + 'x' + level.height +
+                    ', Bitrate: ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
+                appendLog(qualityDetails);
+            });
+
+            // Event listeners for play and pause
+            video.addEventListener('play', function() {
+                appendLog('Video is playing.');
+            });
+
+            video.addEventListener('pause', function() {
+                appendLog('Video is paused.');
+            });
+
+            // ////////////////
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = videoUrl;
+                video.addEventListener('loadedmetadata', function() {
+                    video.play();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

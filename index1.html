@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive HLS Player</title>
+    <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        #video-container {
+            margin-top: 20px;
+        }
+        #stats, #profileInfo {
+            background-color: #f7f7f9;
+            padding: 10px;
+            border: 1px solid #e1e1e8;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            height: 400px;
+            overflow-y: auto;
+        }
+        #statsPanel {
+            position: relative;
+            padding-left: 20px;
+        }
+        select {
+            margin-top: 10px;
+            width: 100%;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f7f7f9;
+            border-top: 1px solid #e1e1e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <h1>HLS Playback</h1>
+        <p class="lead">Get to know your m3u8 files.</p>
+        <div class="row">
+            <div class="col-md-8">
+                <input type="text" id="videoUrl" class="form-control" placeholder="Enter video URL here">
+                <button id="loadVideo" class="btn btn-primary btn-block mt-3">Load Video</button>
+                <div id="video-container">
+                    <video id="videoPlayer" controls style="width: 100%; height: auto;"></video>
+                </div>
+                <select id="qualitySelector" class="form-control"></select>
+            </div>
+            <div class="col-md-4" id="statsPanel">
+                <div id="profileInfo"><strong>Available Profiles:</strong></div>
+                <div id="stats"><strong>Playback Details:</strong></div>
+            </div>
+        </div>
+        <footer>
+            Copyrights © Ahmad Khan
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        document.getElementById('loadVideo').addEventListener('click', function() {
+            var videoUrl = document.getElementById('videoUrl').value;
+            var video = document.getElementById('videoPlayer');
+            var statsDisplay = document.getElementById('stats');
+            var profileInfo = document.getElementById('profileInfo');
+            var qualitySelector = document.getElementById('qualitySelector');
+            if (Hls.isSupported()) {
+                var hls = new Hls();
+                hls.loadSource(videoUrl);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    video.play();
+                });
+
+                hls.on(Hls.Events.MANIFEST_LOADED, function(event, data) {
+                    qualitySelector.innerHTML = '';
+                    profileInfo.innerHTML += '<br>';
+                    data.levels.forEach((level, index) => {
+                        var option = document.createElement('option');
+                        option.value = index;
+                        option.text = 'Level ' + index + ': ' + level.width + 'x' + level.height + ', ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
+                        qualitySelector.appendChild(option);
+                        profileInfo.innerHTML += option.text + '<br>';
+                    });
+                    var autoOption = document.createElement('option');
+                    autoOption.value = -1;
+                    autoOption.text = 'Auto';
+                    autoOption.selected = true;
+                    qualitySelector.appendChild(autoOption);
+                });
+
+            // qualitySelector.onchange = function() {
+            //     if (this.value === '-1') {
+            //         hls.currentLevel = -1; // Set to automatic quality switching
+            //         // Clear existing messages and wait for the LEVEL_SWITCHED event to update
+            //         statsDisplay.innerHTML = 'Switched to <strong>Automatic Quality Mode</strong>. Current quality details will update automatically.<br>';
+            //     } else {
+            //         hls.currentLevel = parseInt(this.value);
+            //         var level = hls.levels[hls.currentLevel];
+            //         statsDisplay.innerHTML = 'Manual switch to level: <strong>' + this.value + '</strong>, Resolution: <strong>' + level.width + 'x' + level.height + '</strong>, Bitrate: <strong>' + (level.bitrate / 1024).toFixed(2) + ' kbps</strong><br>';
+            //     }
+            // };
+
+            // hls.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
+            //     var level = hls.levels[data.level];
+            //     var qualityDetails = 'Current Playback: <strong>Level ' + data.level + '</strong>, Resolution: <strong>' + level.width + 'x' + level.height + '</strong>, Bitrate: <strong>' + (level.bitrate / 1024).toFixed(2) + ' kbps</strong>';
+            //     // Append or replace the stats display with the latest quality details
+            //     statsDisplay.innerHTML += qualityDetails + '<br>';
+            // });
+
+            
+            // Update for handling the quality selector change
+            qualitySelector.onchange = function() {
+                if (this.value === '-1') {
+                    hls.currentLevel = -1;
+                    var autoModeMessage = 'Switched to <strong>Automatic Quality Mode</strong>. Current quality details will update automatically.<br>';
+                    statsDisplay.innerHTML = autoModeMessage + statsDisplay.innerHTML; // Prepend the new message
+                    // Fetch and display the current quality details immediately after switching to auto
+                    setTimeout(() => {
+                        var level = hls.levels[hls.currentLevel];
+                        var currentQuality = 'Resolution: ' + level.width + 'x' + level.height + ', Bitrate: ' + (level.bitrate / 1024).toFixed(2) + ' kbps<br>';
+                        statsDisplay.innerHTML = currentQuality + statsDisplay.innerHTML; // Prepend the new details
+                    }, 1000); // Delay may need adjustment depending on the player's responsiveness
+                } else {
+                    hls.currentLevel = parseInt(this.value);
+                    var level = hls.levels[hls.currentLevel];
+                    var manualSwitchMessage = 'Manual switch to level: <strong>' + this.value + '</strong>, Resolution: <strong>' + level.width + 'x' + level.height + '</strong>, Bitrate: <strong>' + (level.bitrate / 1024).toFixed(2) + ' kbps</strong><br>';
+                    statsDisplay.innerHTML = manualSwitchMessage + statsDisplay.innerHTML; // Prepend the new message
+                }
+            };
+
+            // Update for LEVEL_SWITCHED to always update the display
+            hls.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
+                var level = hls.levels[data.level];
+                var qualityDetails = 'Current Playback: Level ' + data.level +
+                    ', Resolution: ' + level.width + 'x' + level.height +
+                    ', Bitrate: ' + (level.bitrate / 1024).toFixed(2) + ' kbps<br>';
+                statsDisplay.innerHTML = qualityDetails + statsDisplay.innerHTML; // Prepend the new details
+            });
+
+            // Add play and pause event listeners
+            video.addEventListener('play', function() {
+                var playMessage = 'Video is playing.<br>';
+                statsDisplay.innerHTML = playMessage + statsDisplay.innerHTML; // Prepend the message
+            });
+
+            video.addEventListener('pause', function() {
+                var pauseMessage = 'Video is paused.<br>';
+                statsDisplay.innerHTML = pauseMessage + statsDisplay.innerHTML; // Prepend the message
+            });
+
+
+// ////////////////
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = videoUrl;
+                video.addEventListener('loadedmetadata', function() {
+                    video.play();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
