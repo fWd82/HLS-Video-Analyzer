@@ -41,7 +41,7 @@ To run this analyzer, you will need a modern web browser that supports HTML5 vid
 - HLS.js Library
 
 ## Author
-- Ahmad Khan
+- Fawad Iqbal
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details. 
