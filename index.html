@@ -6,77 +6,8 @@
     <title>Interactive HLS Player - HLS Video Analyzer</title>
     <link href="https://vjs.zencdn.net/8.6.1/video-js.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    
-    <style>
-        body{
-            /* background-color: #00DBDE;
-            background-image: linear-gradient(90deg, #00DBDE 0%, #FC00FF 100%); */
-            /* background-color: rgba(0, 219, 222, 0.1); Adjust the last number (0.5) for desired opacity */
-            background-color: rgba(221, 221, 221, 0.5); /* Adjust the last number (0.5) for desired opacity */
-            /* background-image: linear-gradient(90deg, rgba(0, 219, 222, 0.5) 0%, rgba(252, 0, 255, 0.5) 100%); */
+    <link href="style.css" rel="stylesheet" />
 
-        }
-        /* #video-container {
-            margin-top: 20px;  
-        } */
-
-        #videoPlayer {
-            border: 2px solid #333;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .watermark {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: yellow;
-            color: black;
-            padding: 5px;
-            font-size: 14px;
-            opacity: 0.75;
-            z-index: 100;
-        }
-
-        #profileInfo, #stats {
-            background-color: #f7f7f9;
-            padding: 10px;
-            border: 1px solid #e1e1e8;
-            /* margin-top: 10px; */
-            font-size: 0.9rem; 
-        }
-
-        #statsPanel {
-            position: relative;
-            padding-left: 20px;
-            display: flex;
-            /* min-width: 300px; */
-            flex-direction: column;
-            /* height: 600px;  */
-        }
-
-        select {
-            margin-top: 10px;
-            width: 100%;
-        }
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #f7f7f9;
-            border-top: 1px solid #e1e1e8;
-        }
-
-        #profileInfo {
-            flex-grow: 1; /* Allows this div to take up only as much space as it needs */
-            /* max-height: 30%; Adjust percentage based on your preference */
-        }
-
-        #stats {
-            flex-grow: 2; /* Allows this div to take more space */
-            max-height: 70%; /* Adjust percentage based on your preference */
-        }
-
-    </style>
 </head>
 <body>
     <div class="container mt-2">
@@ -109,7 +40,6 @@
                     <div class="col-md-3">
                         <!-- <p class="font-weight-light">Available Profiles</p> -->
                     </div>
-                   
                 </div>
 
                 <div id="video-container" style="position: relative;">
@@ -130,115 +60,12 @@
             
         </div>
         <footer>
-            Copyrights © Ahmad Khan
+            Copyrights © Fawad Iqbal f84267592
         </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var video = document.getElementById('videoPlayer');
-        var statsList = document.getElementById('stats');
-        var qualitySelector = document.getElementById('qualitySelector');
-        var profileInfo = document.getElementById('profileInfo');
-        var watermark = document.querySelector('.watermark');
-    
-        // Function to append a new log entry to the ordered list
-        function appendLog(message) {
-            var newEntry = document.createElement('li');
-            newEntry.innerHTML = message;
-            statsList.appendChild(newEntry); // Append the new entry to the list
-        }
-    
-        video.addEventListener('play', function() {
-            appendLog('Video is playing.');
-        });
-    
-        video.addEventListener('pause', function() {
-            appendLog('Video is paused.');
-        });
-    
-        document.getElementById('loadVideo').addEventListener('click', function() {
-            var videoUrl = document.getElementById('videoUrl').value;
-    
-            if (videoUrl.trim() === '') {
-                videoUrl = 'https://vod.fawadiqbal.me/asset/913fadd0be3c156283dd9611bedb0fff/play_video/index.m3u8';
-                document.getElementById('videoUrl').value = videoUrl;
-            }
-    
-            if (Hls.isSupported()) {
-                var hls = new Hls();
-                hls.loadSource(videoUrl);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    video.play();
-                });
-    
-                hls.on(Hls.Events.MANIFEST_LOADED, function(event, data) {
-                    qualitySelector.innerHTML = '';
-                    var table = '<table class="table table-hover"><thead><tr><th>Level</th><th>Resolution</th><th>Bitrate</th><th>Video Codec</th><th>Audio Codec</th><th>Playlist URL</th></tr></thead><tbody>';
-                    data.levels.forEach((level, index) => {
-                        var option = document.createElement('option');
-                        option.value = index;
-                        option.text = 'Level ' + index + ': ' + level.width + 'x' + level.height + ', ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
-                        qualitySelector.appendChild(option);
-    
-                        table += '<tr><td>' + index + '</td><td>' + level.width + 'x' + level.height + '</td><td>' +
-                                (level.bitrate / 1024).toFixed(2) + ' kbps</td><td>' + (level.videoCodec || 'N/A') +
-                                '</td><td>' + (level.audioCodec || 'N/A') + '</td><td>' + level.url + '</td></tr>';
-                    });
-                    table += '</tbody></table>';
-                    profileInfo.innerHTML = table;
-    
-                    var autoOption = document.createElement('option');
-                    autoOption.value = -1;
-                    autoOption.text = 'Auto';
-                    autoOption.selected = true;
-                    qualitySelector.appendChild(autoOption);
-                });
-    
-                hls.on(Hls.Events.LEVEL_SWITCHED, function(event, data) {
-                    var level = hls.levels[data.level];
-                    if (hls.currentLevel === -1) {
-                        watermark.textContent = 'Auto: Level ' + data.level + ' - ' + level.width + 'x' + level.height + ', ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
-                    } else {
-                        watermark.textContent = 'Profile: Level ' + data.level + ' - ' + level.width + 'x' + level.height + ', ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
-                    }
-                    var qualityDetails = 'Current Playback: Level ' + data.level +
-                        ', Resolution: ' + level.width + 'x' + level.height +
-                        ', Bitrate: ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
-                    appendLog(qualityDetails);
-                });
-    
-                qualitySelector.onchange = function() {
-                    if (this.value === '-1') {
-                        hls.currentLevel = -1;
-                        setTimeout(() => {
-                            var level = hls.levels[hls.currentLevel];
-                            watermark.textContent = 'Auto: Level ' + hls.currentLevel + ' - ' + level.width + 'x' + level.height + ', ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
-                            var currentQuality = 'Resolution: ' + level.width + 'x' + level.height + ', Bitrate: ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
-                            appendLog(currentQuality);
-                        }, 1000); // Delay to allow HLS.js to switch to an initial auto level
-                        appendLog('Switched to <strong>Automatic Quality Mode</strong>. Current quality details will update automatically.');
-                    } else {
-                        hls.currentLevel = parseInt(this.value);
-                        var level = hls.levels[hls.currentLevel];
-                        watermark.textContent = 'Profile: Level ' + this.value + ' - ' + level.width + 'x' + level.height + ', ' + (level.bitrate / 1024).toFixed(2) + ' kbps';
-                        appendLog('Manual switch to level: <strong>' + this.value + '</strong>, Resolution: <strong>' + level.width + 'x' + level.height + '</strong>, Bitrate: <strong>' + (level.bitrate / 1024).toFixed(2) + ' kbps</strong>');
-                    }
-                };
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = videoUrl;
-                video.addEventListener('loadedmetadata', function() {
-                    video.play();
-                });
-            }
-        });
-    });
-
-</script>
-
+    <script src="script.js"></script>
 
 </body>
 </html>
