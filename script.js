@@ -5,22 +5,31 @@ document.addEventListener('DOMContentLoaded', function() {
     var profileInfo = document.getElementById('profileInfo');
     var watermark = document.querySelector('.watermark');
 
-    // Function to append a new log entry to the ordered list
-    function appendLog(message) {
-        var newEntry = document.createElement('li');
-        newEntry.innerHTML = message;
-        statsList.appendChild(newEntry); // Append the new entry to the list
+
+    // See if something is passed in HTTP URL request
+    var urlFragment = window.location.hash.substring(1); // Remove the '#' and get the rest
+    var textbox = document.getElementById('videoUrl');
+    textbox.value = urlFragment; // Set the extracted URL fragment as the value of the textbox
+
+
+    if (urlFragment) {
+        if (urlFragment.trim() === '') {
+            console.log('urlFragment is empty');
+            // Perform action for empty textbox, such as displaying an error message
+        } else {
+            console.log('urlFragment has value:', urlFragment);
+            // Perform action for non-empty textbox, such as processing the URL
+            loadVideo();
+        }
+    } else {
+        console.log('urlFragment with id "videoUrl" not found.');
     }
 
-    video.addEventListener('play', function() {
-        appendLog('Video is playing.');
-    });
+    // Load Video function
+    function loadVideo() {
+        // Your code here
+        console.log('Video loading or other logic here');
 
-    video.addEventListener('pause', function() {
-        appendLog('Video is paused.');
-    });
-
-    document.getElementById('loadVideo').addEventListener('click', function() {
         var videoUrl = document.getElementById('videoUrl').value;
         if (videoUrl.trim() === '') {
             videoUrl = 'https://vod.fawadiqbal.me/asset/913fadd0be3c156283dd9611bedb0fff/play_video/index.m3u8';
@@ -103,5 +112,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 video.play();
             });
         }
+    }
+    
+    // Check if Button is clicked to play the video
+    document.getElementById('loadVideo').addEventListener('click', function() {
+        loadVideo();
     });
+
+    // Function to append a new log entry to the ordered list
+    function appendLog(message) {
+        var newEntry = document.createElement('li');
+        newEntry.innerHTML = message;
+        statsList.appendChild(newEntry); // Append the new entry to the list
+    }
+
+    video.addEventListener('play', function() {
+        appendLog('Video is playing.');
+    });
+
+    video.addEventListener('pause', function() {
+        appendLog('Video is paused.');
+    });
+
+
 });
+
+
+// Check if there is any changes in the URL.
+window.addEventListener('hashchange', function() {
+    var urlFragment = window.location.hash.substring(1);
+    console.log('URL fragment:', urlFragment);
+
+
+    loadVideo();
+
+  });
+  
+  // Also check at initial page load
+  var initialUrlFragment = window.location.hash.substring(1);
+  console.log('Initial URL fragment:', initialUrlFragment);
+  
