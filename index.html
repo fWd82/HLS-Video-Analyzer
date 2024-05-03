@@ -16,6 +16,8 @@
         <div class="container-fluid">
         <div class="row">
             <div class="col-md-7">
+
+                <!-- Input and Button -->
                 <div class="row">
                     <div class="col-md-9">
                         <input type="text" id="videoUrl" class="form-control" placeholder="Enter video URL here or just press Load Video button">
@@ -23,11 +25,11 @@
                     <div class="col-md-3">
                         <button id="loadVideo" class="btn btn-primary btn-block">Load Video</button>
                     </div>
-                   
                 </div>
+
+                <!-- Dropdown - Option -->
                 <div class="row">
                     <div class="col-md-9">
-
                         <form>
                             <div class="form-group"> 
                                 <select id="qualitySelector" class="form-control">
@@ -42,23 +44,36 @@
                     </div>
                 </div>
 
+                <!-- Video Container -->
                 <div id="video-container" style="position: relative;">
                     <video id="videoPlayer" controls style="width: 100%; height: auto;"></video>
                     <div class="watermark">Profile: Auto</div>
                 </div>
                 
             </div>
+            <!-- eof col-md-7 -->
+
+            <!-- State Panel -->
             <div class="col-md-5" id="statsPanel">
-                <!-- Available Profiles -->
-                <p class="font-weight-light">Available Profiles</p>
-                <div id="profileInfo" style="overflow-y: auto; height: auto;"><strong></strong></div>
                 <!-- Playback Details: -->
                 <p class="font-weight-light mt-3">Playback Details</p>
                 <ol id="stats" style="padding-left: 20px;"></ol>
                 <!-- Using ol instead of div -->
             </div>
+            <!-- eof State Panel -->
+
+
+            <!-- Available Profiles -->
+            <div class="col">
+                <p class="font-weight-light">Available Profiles</p>
+                <div id="profileInfo" style="overflow-y: auto; height: auto;">
+                    <strong></strong>
+                </div>
+            </div>
+            <!-- eof Available Profiles -->
             
         </div>
+        <!-- footer -->
         <footer>
             No Copyrights © Fawad Iqbal f84267592
         </footer>

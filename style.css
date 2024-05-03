@@ -29,6 +29,7 @@ body{
 
 #profileInfo, #stats {
     background-color: #f7f7f9;
+    /* min-width: auto !important; */
     padding: 10px;
     border: 1px solid #e1e1e8;
     /* margin-top: 10px; */
@@ -62,6 +63,92 @@ footer {
 }
 
 #stats {
-    flex-grow: 2; /* Allows this div to take more space */
-    max-height: 70%; /* Adjust percentage based on your preference */
+    flex-grow: 2; 
+    /* Allows this div to take more space */
+    /* max-height: 50%;  */
+    /* Adjust percentage based on your preference */
 }
+
+
+
+#stats {
+    /* width: 80%;  */
+    max-height: 420px;
+
+    /* max-height: 320%; */
+    overflow: auto;
+    /* margin: 20px auto; */
+    padding: 10px 30px;
+    /* border: 1px solid #ededed; */
+    /* background-color: #ffffff; */
+    /* background-color: #f00505; */
+    border-radius: 5px;
+    font-size: 10pt;
+}
+
+/* Styling the scrollbar itself */
+#stats::-webkit-scrollbar {
+    width: 10px;
+}
+
+#stats::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+
+.stats::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+
+#stats::-webkit-scrollbar-thumb:hover {
+    background: #555;
+
+}
+
+
+
+  
+  /* Small devices (phones, 576px and up) */
+  @media (min-width: 576px) {
+    #stats {
+      max-height: 350px; /* Example height for small screens */
+      /* background-color: #94ff94; */
+    }
+  }
+  
+  /* Medium devices (tablets, 768px and up) */
+  @media (min-width: 768px) {
+    #stats {
+      max-height: 300px;  /* Example height for medium screens */
+      height: 278px;
+      /* background-color: #4a9900; */
+    } 
+  }
+
+    /* Medium devices (tablets, 768px and up) */
+    @media (min-width: 992px) {
+        #stats {
+          /* max-height: 370px; Example height for medium screens */
+          /* background-color: #39adfa; */
+        }
+      }
+  
+  /* Large devices (desktops, 992px and up) */
+  @media (min-width: 1200px) {
+    /* You can adjust max-height here if needed */
+    #stats {
+        /* max-height: 370px; Example height for medium screens */
+        /* background-color: #ff6bc1; */
+        max-height: 365px;
+      }
+  }
+  
+  /* Extra large devices (large desktops, 1200px and up) */
+  @media (min-width: 1200px) {
+    /* You can adjust max-height here if needed */
+    
+  }
+  
+  
+  
