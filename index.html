@@ -58,10 +58,19 @@
                 <!-- Playback Details: -->
                 <p class="font-weight-light mt-3">Playback Details</p>
                 <ol id="stats" style="padding-left: 20px;"></ol>
-                <!-- Using ol instead of div -->
+
+                <!-- Details -->
+                <p class="font-weight-light mt-3">Details</p>
+                <div class="" id="detailsPanel">  
+                    <pre id="headerDetails"></pre> 
+                </div>
+                <!-- eof Details -->
+
+                <!-- 
+                    https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8
+                 -->
             </div>
             <!-- eof State Panel -->
-
 
             <!-- Available Profiles -->
             <div class="col">
@@ -72,7 +81,34 @@
             </div>
             <!-- eof Available Profiles -->
             
+
+
+            
+
         </div>
+
+        <div class="">
+            <h3>HLS and TS Response Headers</h3>
+            <div id="bufferTime" class="alert alert-info"></div>
+            <div id="tsDetails" class="alert alert-info"></div>
+            <div id="tsFilesList" class="list-group"></div>
+    
+            <!-- <div class="mb-3">
+                
+            </div> -->
+
+            <!-- Table to show Response Headers -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Header</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody id="headersTable"></tbody>
+            </table>
+        </div>
+
         <!-- footer -->
         <footer>
             No Copyrights © Fawad Iqbal f84267592
@@ -81,6 +117,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="script.js"></script>
+    <!-- <script src="script_php.js"></script> -->
 
 </body>
 </html>
+
+
+

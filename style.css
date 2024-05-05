@@ -107,48 +107,32 @@ footer {
 }
 
 
+#detailsPanel {
+  position: relative;
+  padding-left: 20px;
+  display: flex;
+  /* min-width: 300px; */
+  flex-direction: column;
+  /* height: 600px;  */
+  background-color: #f7f7f9;
+  /* min-width: auto !important; */
+  padding: 10px;
+  border: 1px solid #e1e1e8;
+  /* margin-top: 10px; */
+  font-size: 0.9rem; 
+  
+}
 
-  
-  /* Small devices (phones, 576px and up) */
-  @media (min-width: 576px) {
-    #stats {
-      max-height: 350px; /* Example height for small screens */
-      /* background-color: #94ff94; */
-    }
-  }
-  
-  /* Medium devices (tablets, 768px and up) */
-  @media (min-width: 768px) {
-    #stats {
-      max-height: 300px;  /* Example height for medium screens */
-      height: 278px;
-      /* background-color: #4a9900; */
-    } 
-  }
+#headerDetails{
+  max-height: 1620px;
+  overflow: auto;
 
-    /* Medium devices (tablets, 768px and up) */
-    @media (min-width: 992px) {
-        #stats {
-          /* max-height: 370px; Example height for medium screens */
-          /* background-color: #39adfa; */
-        }
-      }
-  
-  /* Large devices (desktops, 992px and up) */
-  @media (min-width: 1200px) {
-    /* You can adjust max-height here if needed */
-    #stats {
-        /* max-height: 370px; Example height for medium screens */
-        /* background-color: #ff6bc1; */
-        max-height: 365px;
-      }
-  }
-  
-  /* Extra large devices (large desktops, 1200px and up) */
-  @media (min-width: 1200px) {
-    /* You can adjust max-height here if needed */
-    
-  }
-  
-  
-  
+}
+
+.table td, .table th {
+  padding: .50rem;
+  padding-top: 0.50rem;
+  padding-right: 0.50rem;
+  padding-bottom: 0.50rem;
+}
+

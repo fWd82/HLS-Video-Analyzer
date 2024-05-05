@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Stream Analyzer</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+
+    <h1>Video Stream Analyzer</h1>
+    <button id="loadVideo">Load Video Data</button>
+    <pre id="headersDisplay"></pre>
+
+    <!-- <script>
+        document.getElementById('loadVideo').addEventListener('click', function() {
+            const m3u8Url = 'https://vod.fawadiqbal.me/asset/913fadd0be3c156283dd9611bedb0fff/play_video/index.m3u8';
+
+            // Fetch the M3U8 file
+            fetch(m3u8Url).then(response => {
+                return response.text();
+            }).then(data => {
+                // Parse the M3U8 content to find TS files
+                const lines = data.split('\n');
+                console.log("Data FILES: ");
+                console.log(data);
+                const tsFiles = lines.filter(line => line.endsWith('.m3u8'));
+
+                console.log("TS FILES: ");
+                console.log(tsFiles);
+
+                if (tsFiles.length > 0) {
+                    // Fetch the first TS file
+                    fetch('https://vod.fawadiqbal.me/asset/913fadd0be3c156283dd9611bedb0fff/play_video/' + tsFiles[0], {method: 'GET'}).then(tsResponse => {
+                        // Display all response headers
+                        const headers = tsResponse.headers;
+                        console.log("tsResponse: ");
+                        console.log(tsResponse);
+
+                        console.log("headers: ");
+                        console.log(headers);
+
+                        let headersText = '';
+                        headers.forEach((value, key) => {
+                            headersText += `${key}: ${value}\n`;
+                        });
+                        document.getElementById('headersDisplay').textContent = headersText;
+                    }).catch(error => {
+                        console.error('Error fetching the TS file:', error);
+                    });
+                } else {
+                    console.log('No TS files found in the M3U8 file.');
+                }
+            }).catch(error => {
+                console.error('Error fetching the M3U8 file:', error);
+            });
+        });
+    </script> -->
+    <script>
+         console.log('loasded');
+        // Assuming HLS.js is included in your project
+if (Hls.isSupported()) {
+    console.log('supported');
+    var video = document.getElementById('headersDisplay');
+    var hls = new Hls();
+
+    // Listen for fragment loading to access response headers
+    hls.on(Hls.Events.FRAG_LOADING, function (event, data) {
+        fetch(data.frag.url)
+            .then(response => {
+                console.log('Headers for:', data.frag.url);
+                response.headers.forEach((value, key) => {
+                    console.log(`${key}: ${value}`);
+                });
+            });
+    });
+
+    // Bind the video player
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+        hls.loadSource('https://vod.fawadiqbal.me/asset/913fadd0be3c156283dd9611bedb0fff/play_video/index.m3u8');
+    });
+
+    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+        console.log('manifest loaded, found ' + data.levels.length + ' quality level');
+    });
+} else {
+    console.log('HLS not supported');
+}
+
+    </script>
+    
+</body>
+</html>

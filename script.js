@@ -27,6 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load Video function
     function loadVideo() {
+
+        console.log("textbox");
+        var videoUrl = document.getElementById('videoUrl');
+        console.log(videoUrl.value);
+
         // Your code here
         console.log('Video loading or other logic here');
 
@@ -35,6 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
             videoUrl = 'https://vod.fawadiqbal.me/asset/913fadd0be3c156283dd9611bedb0fff/play_video/index.m3u8';
             document.getElementById('videoUrl').value = videoUrl;
         }
+
+        fetchHeaders();
+
+        fetchHeaders2();
+        simulateBufferTime();
+        fetchTSFiles();
 
         if (Hls.isSupported()) {
             var hls = new Hls();
@@ -134,7 +145,8 @@ document.addEventListener('DOMContentLoaded', function() {
         appendLog('Video is paused.');
     });
 
-
+    // Set up an interval to fetch headers every minute
+    setInterval(fetchHeaders, 60000); // 60000 milliseconds = 1 minute
 });
 
 
@@ -152,3 +164,89 @@ window.addEventListener('hashchange', function() {
   var initialUrlFragment = window.location.hash.substring(1);
   console.log('Initial URL fragment:', initialUrlFragment);
   
+  // Define a function to fetch headers
+  function fetchHeaders() {
+    var textbox = document.getElementById('videoUrl');
+
+    fetch(textbox.value, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/vnd.apple.mpegurl'
+        }
+    }).then(response => {
+        const headers = response.headers;
+        const headerDetails = document.getElementById('headerDetails');
+        headerDetails.innerHTML = '';
+
+        headers.forEach((val, key) => {
+            headerDetails.innerHTML += `<strong>${key}</strong>: ${val}\n`;
+        });
+    }).catch(error => {
+        console.error('Error fetching headers:', error);
+    });
+}
+
+
+
+/////////// NEW Methods PHP:
+
+function simulateBufferTime() {
+    const bufferTime = Math.random() * 1000; // Simulate buffer time in milliseconds
+    const bufferDisplay = document.getElementById('bufferTime');
+    bufferDisplay.textContent = `Buffer Time: ${bufferTime.toFixed(2)} ms`;
+}
+
+function fetchHeaders2() {
+    // const inputValue = document.getElementById('inputField').value;
+    // const inputValue = "https://vod.fawadiqbal.me/asset/913fadd0be3c156283dd9611bedb0fff/play_video/index.m3u8";
+    
+    console.log("fetchHeaders2() called");
+    var inputValue = document.getElementById('videoUrl').value;
+    console.log(inputValue);
+    
+    const url = `index2.php?inputValue=${inputValue}`;
+    console.log("url2");
+    console.log(url);
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('headersTable');
+            tbody.innerHTML = ''; // Clear previous entries
+            Object.entries(data).forEach(([key, value]) => {
+                const row = `<tr><td>${key}</td><td>${value}</td></tr>`;
+                tbody.innerHTML += row;
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching headers:', error);
+            document.getElementById('headersTable').innerHTML = '<tr><td colspan="2">Failed to load headers.</td></tr>';
+        });
+}
+
+function fetchTSFiles() {
+    console.log("fetchTSFiles() called: ");
+    // const inputValue = document.getElementById('inputField').value;
+     
+    // const inputValue = encodeURIComponent("https://vod.fawadiqbal.me/asset/913fadd0be3c156283dd9611bedb0fff/play_video/index.m3u8");
+
+    var inputValue = document.getElementById('videoUrl').value;
+    console.log(inputValue);
+    
+
+    const url = `index1.php?inputValue=${inputValue}`;
+    fetch(url)
+    // fetch(`index.php`)
+        .then(response => response.json())
+        .then(tsFiles => {
+            const tsList = document.getElementById('tsFilesList');
+            tsList.innerHTML = ''; // Clear previous entries
+            tsFiles.forEach(file => {
+                const item = `<li>${file}</li>`;
+                tsList.innerHTML += item;
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching TS files:', error);
+            document.getElementById('tsFilesList').innerHTML = '<li>Failed to load TS files.</li>';
+        });
+}
