@@ -247,7 +247,43 @@ function fetchHeaders2() {
     //         document.getElementById('spinner-1').classList.add('d-none'); // hide spinner-1
     //         document.getElementById('spinner-2').classList.add('d-none'); // hide spinner-2
     //     }) 
-    
+    ////////////////////////////////////////////
+        // fetch(url)
+        // .then(response => response.json())
+        // .then(data => {
+        //     const tbody = document.getElementById('headersTable');
+        //     tbody.innerHTML = ''; // Clear previous entries
+
+        //     // Headers you are interested in
+        //     const interestingHeaders = new Set([
+        //         "via",
+        //         "X-CCDN-Origin-Time",
+        //         "x-hcs-proxy-type",
+        //         "X-CCDN-CacheTTL",
+        //         "X-CCDN-REQ-ID-46B1",
+        //         "Accept-Ranges"
+        //     ]);
+
+        //     // Element where selected headers will be displayed
+        //     const cdnNode = document.getElementById('cdnNode');
+        //     cdnNode.innerHTML = ''; // Clear previous content
+
+        //     Object.entries(data).forEach(([key, value]) => {
+        //         const row = `<tr><td>${key}</td><td>${value}</td></tr>`;
+        //         tbody.innerHTML += row; // Add to the table
+
+        //         // Check and display only interesting headers
+        //         if (interestingHeaders.has(key)) {
+        //             cdnNode.innerHTML += `<p><strong>${key}</strong>: ${value}</p>`;
+        //         }
+        //     });
+
+        //     document.getElementById('spinner-1').classList.add('d-none'); // hide spinner 1
+        //     document.getElementById('spinner-2').classList.add('d-none'); // hide spinner 2
+        // })
+
+        //////////////
+
         fetch(url)
         .then(response => response.json())
         .then(data => {
@@ -274,13 +310,21 @@ function fetchHeaders2() {
 
                 // Check and display only interesting headers
                 if (interestingHeaders.has(key)) {
+                    if (key === "via") { // Special formatting for 'via'
+                        // Replace commas outside of brackets with ',<br />'
+                        value = value.replace(/,(?![^\[]*\])/g, ',<br />');
+                        key = "CDN Node"; // Rename key to 'CDN node'
+                    }
                     cdnNode.innerHTML += `<p><strong>${key}</strong>: ${value}</p>`;
+                    // cdnNode.innerHTML += `<p><strong>${key}</strong>:<br />${value}</p>`; // Include a break after 'CDN node'
+            
                 }
             });
 
             document.getElementById('spinner-1').classList.add('d-none'); // hide spinner 1
             document.getElementById('spinner-2').classList.add('d-none'); // hide spinner 2
         })
+
 
   
         //////////////
