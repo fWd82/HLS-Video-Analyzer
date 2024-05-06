@@ -10,7 +10,7 @@
 
 </head>
 <body>
-    <div class="container mt-2">
+    <div class="container-fluid mt-2">
         <h3>HLS Video Analyzer</h3>
         <p class="lead">Get to know your Huawei Cloud m3u8 Stream</p>
         <div class="container-fluid">
@@ -41,6 +41,15 @@
                     </div>
                     <div class="col-md-3">
                         <!-- <p class="font-weight-light">Available Profiles</p> -->
+                        <!-- Loading Spinner -->
+                        <div
+                        class="spinner-border text-primary"
+                        id="spinner-1"
+                        role="status"
+                    >
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <!-- eof Loading Spinner -->
                     </div>
                 </div>
 
@@ -55,6 +64,10 @@
 
             <!-- State Panel -->
             <div class="col-md-5" id="statsPanel">
+
+                <!-- <div id="cdnNode" class="stats alert alert-info">CDN Info</div> -->
+                <div id="cdnNode" class="stats">CDN Info</div>
+
                 <!-- Playback Details: -->
                 <p class="font-weight-light mt-3">Playback Details</p>
                 <ol id="stats" style="padding-left: 20px;"></ol>
@@ -80,33 +93,46 @@
                 </div>
             </div>
             <!-- eof Available Profiles -->
-            
-
-
-            
-
         </div>
 
         <div class="">
-            <h3>HLS and TS Response Headers</h3>
-            <div id="bufferTime" class="alert alert-info"></div>
-            <div id="tsDetails" class="alert alert-info"></div>
-            <div id="tsFilesList" class="list-group"></div>
-    
-            <!-- <div class="mb-3">
-                
-            </div> -->
+            <p class="font-weight-light">HLS and TS Response</p>
+            <!-- Loading Spinner -->
+            <div
+                class="spinner-border text-primary"
+                id="spinner-2"
+                role="status"
+            >
+                <span class="sr-only">Loading...</span>
+            </div>
+            <!-- eof Loading Spinner -->
 
-            <!-- Table to show Response Headers -->
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Header</th>
-                        <th>Value</th>
-                    </tr>
-                </thead>
-                <tbody id="headersTable"></tbody>
-            </table>
+            <div id="bufferTime" class=""></div> 
+
+            <div class="row">
+                <div class="col-md-5 mt-2" >
+                    <p class="font-weight-light">Response</p>
+                    <div id="tableHeaderValues"> 
+                        <!-- Table to show Response Headers -->
+                        <table  class="table table-bordered font-weight-light">
+                            <thead>
+                                <tr>
+                                    <th>Header</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="headersTable"></tbody>
+                        </table> 
+                    </div>
+                </div>
+                <div class="col-md-5 mt-2">
+                    <p class="font-weight-light">Transport Files List</p>
+                    <div id="tsFilesList" class="font-weight-light"></div>
+                </div>
+            </div> 
+            
+            <br />
+            
         </div>
 
         <!-- footer -->

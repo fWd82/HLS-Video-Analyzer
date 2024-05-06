@@ -136,3 +136,49 @@ footer {
   padding-bottom: 0.50rem;
 }
 
+#cdnNode {
+    background-color: #f7f7f9;
+    /* min-width: auto !important; */
+    padding: 10px;
+    border: 1px solid #e1e1e8;
+    /* margin-top: 10px; */
+    font-size: 0.9rem; 
+}
+
+
+#tsFilesList{
+    background-color: #f7f7f9;
+    /* min-width: auto !important; */
+    padding: 10px;
+    border: 1px solid #e1e1e8;
+    /* margin-top: 10px; */
+    font-size: 0.9rem; 
+    overflow: auto;
+    max-height: 420px;
+}
+
+#tableHeaderValues{
+    margin-bottom: 20px;
+    background-color: #f7f7f9;
+    /* min-width: auto !important; */
+    padding: 10px;
+    border: 1px solid #e1e1e8;
+    /* margin-top: 10px; */
+    font-size: 0.9rem; 
+    overflow: auto;
+    max-height: 420px;
+}
+
+
+
+#bufferTime{
+    margin-bottom: 20px;
+    background-color: #f7f7f9;
+    /* min-width: auto !important; */
+    padding: 10px;
+    border: 1px solid #e1e1e8;
+    /* margin-top: 10px; */
+    font-size: 0.9rem; 
+    overflow: auto;
+    max-height: 420px;
+}

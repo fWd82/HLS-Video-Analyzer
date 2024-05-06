@@ -5,6 +5,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var profileInfo = document.getElementById('profileInfo');
     var watermark = document.querySelector('.watermark');
 
+    // hide spinner
+    console.log('spinner DOM 1 loaded'); 
+ 
+    document.getElementById('spinner-1').classList.add('d-none'); // hide
+    document.getElementById('spinner-2').classList.add('d-none'); // hide
 
     // See if something is passed in HTTP URL request
     var urlFragment = window.location.hash.substring(1); // Remove the '#' and get the rest
@@ -28,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load Video function
     function loadVideo() {
 
+        document.getElementById('spinner-1').classList.remove('d-none'); // show
+        document.getElementById('spinner-2').classList.remove('d-none'); // show
+
         console.log("textbox");
         var videoUrl = document.getElementById('videoUrl');
         console.log(videoUrl.value);
@@ -42,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         fetchHeaders();
-
         fetchHeaders2();
         simulateBufferTime();
         fetchTSFiles();
@@ -122,7 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
             video.addEventListener('loadedmetadata', function() {
                 video.play();
             });
-        }
+        } 
+        
     }
     
     // Check if Button is clicked to play the video
@@ -186,8 +194,6 @@ window.addEventListener('hashchange', function() {
     });
 }
 
-
-
 /////////// NEW Methods PHP:
 
 function simulateBufferTime() {
@@ -207,20 +213,82 @@ function fetchHeaders2() {
     const url = `index2.php?inputValue=${inputValue}`;
     console.log("url2");
     console.log(url);
-    fetch(url)
+    // fetch(url)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         const tbody = document.getElementById('headersTable');
+    //         tbody.innerHTML = ''; // Clear previous entries
+    //         Object.entries(data).forEach(([key, value]) => {
+    //             const row = `<tr><td>${key}</td><td>${value}</td></tr>`;
+    //             tbody.innerHTML += row;
+    //         });
+    //         document.getElementById('spinner-1').classList.add('d-none'); // hide
+    //         document.getElementById('spinner-2').classList.add('d-none'); // hide
+    //     })
+///////////
+
+    // fetch(url)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         const tbody = document.getElementById('headersTable');
+    //         tbody.innerHTML = ''; // Clear previous entries
+    //         const cdnNode = document.getElementById('cdnNode'); // Get the element for displaying 'via'
+
+    //         Object.entries(data).forEach(([key, value]) => {
+    //             const row = `<tr><td>${key}</td><td>${value}</td></tr>`;
+    //             tbody.innerHTML += row;
+
+    //             if (key.toLowerCase() === 'via') { // Check if the key is 'via'
+    //                 cdnNode.textContent = `CDN Node: ${value}`; // Display the value of 'via'
+    //                 cdnNode.classList.remove('d-none'); // Make sure the div is visible if it was hidden
+    //             }
+    //         });
+
+    //         document.getElementById('spinner-1').classList.add('d-none'); // hide spinner-1
+    //         document.getElementById('spinner-2').classList.add('d-none'); // hide spinner-2
+    //     }) 
+    
+        fetch(url)
         .then(response => response.json())
         .then(data => {
             const tbody = document.getElementById('headersTable');
             tbody.innerHTML = ''; // Clear previous entries
+
+            // Headers you are interested in
+            const interestingHeaders = new Set([
+                "via",
+                "X-CCDN-Origin-Time",
+                "x-hcs-proxy-type",
+                "X-CCDN-CacheTTL",
+                "X-CCDN-REQ-ID-46B1",
+                "Accept-Ranges"
+            ]);
+
+            // Element where selected headers will be displayed
+            const cdnNode = document.getElementById('cdnNode');
+            cdnNode.innerHTML = ''; // Clear previous content
+
             Object.entries(data).forEach(([key, value]) => {
                 const row = `<tr><td>${key}</td><td>${value}</td></tr>`;
-                tbody.innerHTML += row;
+                tbody.innerHTML += row; // Add to the table
+
+                // Check and display only interesting headers
+                if (interestingHeaders.has(key)) {
+                    cdnNode.innerHTML += `<p><strong>${key}</strong>: ${value}</p>`;
+                }
             });
+
+            document.getElementById('spinner-1').classList.add('d-none'); // hide spinner 1
+            document.getElementById('spinner-2').classList.add('d-none'); // hide spinner 2
         })
+
+  
+        //////////////
         .catch(error => {
             console.error('Error fetching headers:', error);
             document.getElementById('headersTable').innerHTML = '<tr><td colspan="2">Failed to load headers.</td></tr>';
         });
+        
 }
 
 function fetchTSFiles() {
@@ -235,7 +303,6 @@ function fetchTSFiles() {
 
     const url = `index1.php?inputValue=${inputValue}`;
     fetch(url)
-    // fetch(`index.php`)
         .then(response => response.json())
         .then(tsFiles => {
             const tsList = document.getElementById('tsFilesList');
@@ -244,9 +311,13 @@ function fetchTSFiles() {
                 const item = `<li>${file}</li>`;
                 tsList.innerHTML += item;
             });
+            document.getElementById('spinner-1').classList.add('d-none'); // hide
+            document.getElementById('spinner-2').classList.add('d-none'); // hide
         })
+        
         .catch(error => {
             console.error('Error fetching TS files:', error);
             document.getElementById('tsFilesList').innerHTML = '<li>Failed to load TS files.</li>';
         });
+        
 }
